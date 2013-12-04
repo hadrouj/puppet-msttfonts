@@ -1,3 +1,6 @@
+
+#http://corefonts.sourceforge.net/
+
 class msttfonts ($version = '2.5-1') {
 
   package { [ 'rpm-build', 'cabextract' ]:
@@ -15,13 +18,13 @@ class msttfonts ($version = '2.5-1') {
     command => "rpmbuild -ba msttcorefonts-${version}.spec",
     cwd     => '/tmp',
     path    => '/bin:/usr/bin',
-    unless  => "test -f /root/rpmbuild/RPMS/noarch/msttcorefonts-${version}.noarch.rpm",
+    unless  => "test -f /rpmbuild/RPMS/noarch/msttcorefonts-${version}.noarch.rpm",
     require => [Exec['download-msttcorefonts'], Package['rpm-build']],
   }
 
   exec {'install-msttcorefonts':
-    command => "yum localinstall --nogpgcheck msttcorefonts-${version}.noarch.rpm",
-    cwd     => '/root/rpmbuild/RPMS/noarch/',
+    command => "yum localinstall -y --nogpgcheck msttcorefonts-${version}.noarch.rpm",
+    cwd     => '/rpmbuild/RPMS/noarch/',
     path    => '/bin:/usr/bin',
     unless  => 'fc-list | grep Arial',
     require => Exec['rpm-build-msttcorefonts'],
@@ -30,6 +33,7 @@ class msttfonts ($version = '2.5-1') {
   exec {'regenerate-font-cache':
     command => 'fc-cache -fv',
     path    => '/bin:/usr/bin',
+    unless  => 'fc-list | grep Arial',
     require => Exec['install-msttcorefonts'],
   }
 
