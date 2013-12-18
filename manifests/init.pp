@@ -18,13 +18,13 @@ class msttfonts ($version = '2.5-1') {
     command => "rpmbuild -ba msttcorefonts-${version}.spec",
     cwd     => '/tmp',
     path    => '/bin:/usr/bin',
-    unless  => "test -f /rpmbuild/RPMS/noarch/msttcorefonts-${version}.noarch.rpm",
+    unless  => "test -f ${HOME}/rpmbuild/RPMS/noarch/msttcorefonts-${version}.noarch.rpm",
     require => [Exec['download-msttcorefonts'], Package['rpm-build']],
   }
 
   exec {'install-msttcorefonts':
     command => "yum localinstall -y --nogpgcheck msttcorefonts-${version}.noarch.rpm",
-    cwd     => '/rpmbuild/RPMS/noarch/',
+    cwd     => "${HOME}/rpmbuild/RPMS/noarch/",
     path    => '/bin:/usr/bin',
     unless  => 'fc-list | grep Arial',
     require => Exec['rpm-build-msttcorefonts'],
