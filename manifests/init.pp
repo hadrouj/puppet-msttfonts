@@ -1,8 +1,13 @@
-
 #http://corefonts.sourceforge.net/
 
 class msttfonts ($version = '2.5-1') {
 
+  if !defined(Package['ttmkfdir']) {
+    package { 'ttmkfdir':
+      ensure => installed,
+    }
+  }
+  
   package { [ 'rpm-build', 'cabextract' ]:
     ensure => installed
   }
